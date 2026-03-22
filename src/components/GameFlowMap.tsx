@@ -26,7 +26,7 @@ const baseNodes: Node[] = [
     id: 'snake',
     type: 'game',
     position: { x: 250, y: 250 },
-    data: { label: 'SNAKE', description: 'Coming soon', level: 2, gameId: 'snake' },
+    data: { label: 'SNAKE', description: 'Eat 10 apples', level: 2, gameId: 'snake' },
   },
   {
     id: 'pong',

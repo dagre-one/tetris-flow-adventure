@@ -36,10 +36,10 @@ const Index = () => {
       {/* Active Game Overlay */}
       <AnimatePresence>
         {activeGame === 'tetris' && (
-          <TetrisGame
-            onWin={handleWin}
-            onClose={() => setActiveGame(null)}
-          />
+          <TetrisGame onWin={handleWin} onClose={() => setActiveGame(null)} />
+        )}
+        {activeGame === 'snake' && (
+          <SnakeGame onWin={handleWin} onClose={() => setActiveGame(null)} />
         )}
       </AnimatePresence>
     </div>
