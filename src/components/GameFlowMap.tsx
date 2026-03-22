@@ -1,12 +1,9 @@
-import { useCallback } from 'react';
 import {
   ReactFlow,
   Background,
   BackgroundVariant,
   type Node,
   type Edge,
-  useNodesState,
-  useEdgesState,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import GameNode from './GameNode';
@@ -18,7 +15,7 @@ interface GameFlowMapProps {
   onPlayLevel: (levelId: string) => void;
 }
 
-const initialNodes: Node[] = [
+const baseNodes: Node[] = [
   {
     id: 'tetris',
     type: 'game',
@@ -45,14 +42,19 @@ const initialNodes: Node[] = [
   },
 ];
 
-const initialEdges: Edge[] = [
+const edges: Edge[] = [
   { id: 'e1-2', source: 'tetris', target: 'snake', animated: true, style: { stroke: 'hsl(160 100% 50%)', strokeWidth: 2 } },
   { id: 'e2-3', source: 'snake', target: 'pong', animated: true, style: { stroke: 'hsl(160 100% 50% / 0.3)', strokeWidth: 2 } },
   { id: 'e2-4', source: 'snake', target: 'breakout', animated: true, style: { stroke: 'hsl(160 100% 50% / 0.3)', strokeWidth: 2 } },
 ];
 
+function isUnlocked(nodeId: string, completed: Set<string>): boolean {
+  const deps: Record<string, string> = { snake: 'tetris', pong: 'snake', breakout: 'snake' };
+  return deps[nodeId] ? completed.has(deps[nodeId]) : false;
+}
+
 export default function GameFlowMap({ completedLevels, onPlayLevel }: GameFlowMapProps) {
-  const nodesWithState = initialNodes.map(node => ({
+  const nodes = baseNodes.map(node => ({
     ...node,
     data: {
       ...node.data,
@@ -61,9 +63,6 @@ export default function GameFlowMap({ completedLevels, onPlayLevel }: GameFlowMa
       onPlay: onPlayLevel,
     },
   }));
-
-  const [nodes] = useNodesState(nodesWithState);
-  const [edges] = useEdgesState(initialEdges);
 
   return (
     <div className="w-full h-screen">
@@ -75,7 +74,6 @@ export default function GameFlowMap({ completedLevels, onPlayLevel }: GameFlowMa
         proOptions={{ hideAttribution: true }}
         nodesDraggable={false}
         nodesConnectable={false}
-        elementsSelectable={false}
         panOnDrag={true}
         zoomOnScroll={true}
       >
@@ -83,13 +81,4 @@ export default function GameFlowMap({ completedLevels, onPlayLevel }: GameFlowMa
       </ReactFlow>
     </div>
   );
-}
-
-function isUnlocked(nodeId: string, completed: Set<string>): boolean {
-  const deps: { [key: string]: string } = {
-    snake: 'tetris',
-    pong: 'snake',
-    breakout: 'snake',
-  };
-  return deps[nodeId] ? completed.has(deps[nodeId]) : false;
 }
