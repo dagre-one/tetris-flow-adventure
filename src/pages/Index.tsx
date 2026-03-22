@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import GameFlowMap from '@/components/GameFlowMap';
 import TetrisGame from '@/components/TetrisGame';
+import SnakeGame from '@/components/SnakeGame';
 
 const Index = () => {
   const [completedLevels, setCompletedLevels] = useState<Set<string>>(new Set());
