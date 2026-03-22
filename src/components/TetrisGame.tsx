@@ -167,9 +167,6 @@ export default function TetrisGame({ onWin, onClose }: TetrisGameProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm"
     >
       <div
-        ref={gameRef}
-        tabIndex={0}
-        onKeyDown={handleKey}
         className="outline-none flex flex-col items-center gap-4"
       >
         <div className="flex items-center justify-between w-full max-w-xs">
