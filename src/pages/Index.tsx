@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import GameFlowMap from '@/components/GameFlowMap';
 import TetrisGame from '@/components/TetrisGame';
+import SnakeGame from '@/components/SnakeGame';
 
 const Index = () => {
   const [completedLevels, setCompletedLevels] = useState<Set<string>>(new Set());
@@ -35,10 +36,10 @@ const Index = () => {
       {/* Active Game Overlay */}
       <AnimatePresence>
         {activeGame === 'tetris' && (
-          <TetrisGame
-            onWin={handleWin}
-            onClose={() => setActiveGame(null)}
-          />
+          <TetrisGame onWin={handleWin} onClose={() => setActiveGame(null)} />
+        )}
+        {activeGame === 'snake' && (
+          <SnakeGame onWin={handleWin} onClose={() => setActiveGame(null)} />
         )}
       </AnimatePresence>
     </div>
