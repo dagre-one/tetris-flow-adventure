@@ -120,26 +120,28 @@ export default function TetrisGame({ onWin, onClose }: TetrisGameProps) {
   }, [drop]);
 
   useEffect(() => {
-    gameRef.current?.focus();
-  }, []);
-
-  const handleKey = useCallback((e: React.KeyboardEvent) => {
-    if (gameOver) return;
-    e.preventDefault();
-    setPiece(prev => {
-      if (e.key === 'ArrowLeft' && !collides(board, prev.shape, prev.x - 1, prev.y))
-        return { ...prev, x: prev.x - 1 };
-      if (e.key === 'ArrowRight' && !collides(board, prev.shape, prev.x + 1, prev.y))
-        return { ...prev, x: prev.x + 1 };
-      if (e.key === 'ArrowDown' && !collides(board, prev.shape, prev.x, prev.y + 1))
-        return { ...prev, y: prev.y + 1 };
-      if (e.key === 'ArrowUp') {
-        const rotated = rotate(prev.shape);
-        if (!collides(board, rotated, prev.x, prev.y))
-          return { ...prev, shape: rotated };
+    const handleKey = (e: KeyboardEvent) => {
+      if (gameOver) return;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
       }
-      return prev;
-    });
+      setPiece(prev => {
+        if (e.key === 'ArrowLeft' && !collides(board, prev.shape, prev.x - 1, prev.y))
+          return { ...prev, x: prev.x - 1 };
+        if (e.key === 'ArrowRight' && !collides(board, prev.shape, prev.x + 1, prev.y))
+          return { ...prev, x: prev.x + 1 };
+        if (e.key === 'ArrowDown' && !collides(board, prev.shape, prev.x, prev.y + 1))
+          return { ...prev, y: prev.y + 1 };
+        if (e.key === 'ArrowUp') {
+          const rotated = rotate(prev.shape);
+          if (!collides(board, rotated, prev.x, prev.y))
+            return { ...prev, shape: rotated };
+        }
+        return prev;
+      });
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, [board, gameOver]);
 
   const restart = () => {
@@ -165,9 +167,6 @@ export default function TetrisGame({ onWin, onClose }: TetrisGameProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm"
     >
       <div
-        ref={gameRef}
-        tabIndex={0}
-        onKeyDown={handleKey}
         className="outline-none flex flex-col items-center gap-4"
       >
         <div className="flex items-center justify-between w-full max-w-xs">

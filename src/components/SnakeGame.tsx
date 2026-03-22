@@ -32,20 +32,24 @@ export default function SnakeGame({ onWin, onClose }: SnakeGameProps) {
   const dirRef = useRef<Dir>('RIGHT');
   const gameRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { gameRef.current?.focus(); }, []);
-
-  const handleKey = useCallback((e: React.KeyboardEvent) => {
-    e.preventDefault();
-    const map: Record<string, Dir> = {
-      ArrowUp: 'UP', ArrowDown: 'DOWN', ArrowLeft: 'LEFT', ArrowRight: 'RIGHT',
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+      }
+      const map: Record<string, Dir> = {
+        ArrowUp: 'UP', ArrowDown: 'DOWN', ArrowLeft: 'LEFT', ArrowRight: 'RIGHT',
+      };
+      const newDir = map[e.key];
+      if (!newDir) return;
+      const opp: Record<Dir, Dir> = { UP: 'DOWN', DOWN: 'UP', LEFT: 'RIGHT', RIGHT: 'LEFT' };
+      if (opp[newDir] !== dirRef.current) {
+        dirRef.current = newDir;
+        setDir(newDir);
+      }
     };
-    const newDir = map[e.key];
-    if (!newDir) return;
-    const opp: Record<Dir, Dir> = { UP: 'DOWN', DOWN: 'UP', LEFT: 'RIGHT', RIGHT: 'LEFT' };
-    if (opp[newDir] !== dirRef.current) {
-      dirRef.current = newDir;
-      setDir(newDir);
-    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, []);
 
   useEffect(() => {
@@ -104,7 +108,7 @@ export default function SnakeGame({ onWin, onClose }: SnakeGameProps) {
       exit={{ scale: 0.8, opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm"
     >
-      <div ref={gameRef} tabIndex={0} onKeyDown={handleKey} className="outline-none flex flex-col items-center gap-4">
+      <div className="outline-none flex flex-col items-center gap-4">
         <div className="flex items-center justify-between w-full" style={{ maxWidth: GRID * CELL + 4 }}>
           <h2 className="font-pixel text-secondary text-glow-cyan text-sm">SNAKE</h2>
           <button onClick={onClose} className="font-pixel text-muted-foreground hover:text-foreground text-xs">✕ ESC</button>
