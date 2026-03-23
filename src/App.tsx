@@ -18,8 +18,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<TetrisPage />} />
-            {/* <Route path="/tetris" element={<TetrisPage />} /> */}
+            <Route path="/" element={<Index />} />
+            <Route path="/tetris" element={<TetrisPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
